@@ -10,6 +10,7 @@ $(document).ready(function() {
       if (this.readyState === 4 && this.status === 200) {
         const response = JSON.parse(this.responseText);
         getElements(response);
+        console.log(response.weather[0]);
       }
     }
 
@@ -17,7 +18,7 @@ $(document).ready(function() {
     request.send();
 
    const getElements = function(response) {
-      $('.showHumidity').text(`The humidity in ${city} is ${response['weather'].description}%`);
+      $('.showHumidity').text(`The humidity in ${city} is ${response.weather[0].description}%`);
       $('.showTemp').text(`The temperature in Kelvins is ${response.main.temp} degrees.`);
     }
   });
