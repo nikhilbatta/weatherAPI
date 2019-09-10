@@ -10,7 +10,7 @@ $(document).ready(function() {
       if (this.readyState === 4 && this.status === 200) {
         const response = JSON.parse(this.responseText);
         getElements(response);
-        console.log(response.weather[0]);
+        console.log(response.weather[0].description);
       }
     }
 
