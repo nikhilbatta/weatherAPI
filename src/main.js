@@ -5,23 +5,27 @@ $(document).ready(function() {
     let cityIDArray =  buildIDArray();
     let weatherPromises =[];
     let weatherDataArray = [];
-
+    let giphyPromises = [];
+    let giphys = []
     cityIDArray.forEach(id => {
       weatherPromises.push(callWeatherAPI(weatherDataArray, id));
     });
-    console.log(weatherPromises);
-
-    Promise.all(weatherPromises).then((function(values) {
-      console.log(weatherDataArray);
-
+    Promise.all(weatherPromises).then( () => {
       weatherDataArray.forEach(function(element, i) {
-        console.log(element);
         $(`#output${i+1}`).html(displayCityInfo(element, i)).show();
+        console.log(element.name);
+        giphyPromises.push(callGiphyAPI(element.name , i, giphys));
       })
-    }));
-  });
+      console.log(weatherDataArray)
+      Promise.all(giphyPromises).then((function(values) {
+        console.log("hitting")
+        console.log(giphys)
+        giphys.forEach(function(element, i) {
+          displayGiphy(element, i);
+        })
+      }));
+    });
 });
-
 function buildIDArray(){
   let cityNames = [];
   $("input:checkbox[name=cityRadio]:checked").each(function(){
@@ -39,7 +43,6 @@ function buildIDArray(){
   let cityIDArray = cityNames.map(x => cityIdsMap.get(x));
   return cityIDArray;
 }
-
 function callWeatherAPI(weatherDataArray, id){
     let weatherService = new WeatherService();
     let promise = weatherService.getWeatherByID(id);
@@ -63,7 +66,23 @@ function displayCityInfo(element, i){
   newHtml += `<h3> ${element.main.humidity} </h3>`
   return newHtml;
 }
+function callGiphyAPI(name, i, giphys){
+  let giphy = new Giphy();
+  let promise = giphy.getGiphyByCity(name);
+  promise.then(function(response){
+    const giphyBody = JSON.parse(response);
+    console.log(giphyBody)
 
+    giphys.push(giphyBody);
+   }, function(error){
+      console.log(error)
+    })
+    return promise;
+}
+function displayGiphy(element,i){
+  return $("#output").append(`<img src=${element.data[0].images.original.url}</img>`)
+}
+});
 // })
 // const cityIDArray = ["4720131","5809844","5812944","5814043"]
 // let newWeather = new WeatherService()
