@@ -2,30 +2,49 @@ import { WeatherService} from './weather-service.js';
 import { Giphy} from './weather-service.js';
 $(document).ready(function() {
   $('#okay').click(function() {
-    let cityNames = []
-    $("input:checkbox[name=cityRadio]:checked").each(function(){
-      var city = $(this).val()
-      console.log(city)
-      cityNames.push(city)
-    })
-    console.log(cityNames)
-    let cityIds = [
-      ["Seattle",5809844],
-      ["New York", 5128638],
-      ["Portland", 4975802],
-      ["Los Angeles",5368361],
-      ["Lacey",5800112]
-    ]
-    let cityIdsMap = new Map(cityIds);
+    let cityIDArray =  buildIDArray();
+    let weatherDataArray = callWeatherAPI(cityIDArray);
+    console.log(weatherDataArray)
 
-    let cityIDArray = cityNames.map(x => cityIdsMap.get(x));
-    console.log(cityIdsMap);
-    console.log(cityIDArray);
-  })
+    // call weather API and suff in city id array
+    console.log(cityIDArray)
+  });
 });
 
+function buildIDArray(){
+  let cityNames = []
+  $("input:checkbox[name=cityRadio]:checked").each(function(){
+    var city = $(this).val();
+    cityNames.push(city);
+  })
+  let cityIds = [
+    ["Seattle",5809844],
+    ["New York", 5128638],
+    ["Portland", 4975802],
+    ["Los Angeles",5368361],
+    ["Lacey",5800112]
+  ]
+  let cityIdsMap = new Map(cityIds);
+  let cityIDArray = cityNames.map(x => cityIdsMap.get(x));
+  return cityIDArray;
 
 
+}
+
+function callWeatherAPI(cityIDArray){
+  let weatherData = []
+  cityIDArray.forEach(function(id){
+    let weatherService = new WeatherService()
+    let promise = weatherService.getWeatherByID(id)
+    promise.then(function(response){
+      const body = JSON.parse(response);
+      weatherData.push(body.main.temp);
+     }, function(error){
+        console.log(error)
+      })
+  })
+  return weatherData;
+}
 //
 //   let weatherService = new WeatherService()
 //   let promise = weatherService.getWeatherByCity(city)// code moved to _weather-service.js_
