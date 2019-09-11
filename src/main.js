@@ -3,9 +3,22 @@ import { Giphy} from './weather-service.js';
 $(document).ready(function() {
   $('#okay').click(function() {
     let cityIDArray =  buildIDArray();
-    let weatherDataArray = callWeatherAPI(cityIDArray);
-    console.log(weatherDataArray);
+    let weatherPromises =[];
+    let weatherDataArray = [];
 
+    cityIDArray.forEach(id => {
+      weatherPromises.push(callWeatherAPI(weatherDataArray, id));
+    });
+    console.log(weatherPromises);
+
+    Promise.all(weatherPromises).then((function(values) {
+      console.log(weatherDataArray);
+
+      weatherDataArray.forEach(function(element, i) {
+        console.log(element);
+        $(`#output${i+1}`).html(displayCityInfo(element, i)).show();
+      })
+    }));
   });
 });
 
@@ -27,20 +40,28 @@ function buildIDArray(){
   return cityIDArray;
 }
 
-function callWeatherAPI(cityIDArray){
-  let weatherData = [];
-  cityIDArray.forEach(function(id){
-    let weatherService = new WeatherService()
-    let promise = weatherService.getWeatherByID(id)
+function callWeatherAPI(weatherDataArray, id){
+    let weatherService = new WeatherService();
+    let promise = weatherService.getWeatherByID(id);
+    console.log(promise);
     promise.then(function(response){
       const body = JSON.parse(response);
-      console.log(body);
-      weatherData.push(body);
+      console.log(body.main);
+      weatherDataArray.push(body);
      }, function(error){
         console.log(error)
       })
-  })
-  return weatherData;
+  return promise;
+}
+function displayCityInfo(element, i){
+  let newHtml = "";
+  let temp = Math.round((element.main.temp - 273.15) *10) /10;
+  console.log('check');
+  newHtml += `<h1> ${element.name} </h1>`;
+  newHtml += `<h2> ${element.weather[0].description} </h2>`
+  newHtml += `<h3> ${temp} </h3>`
+  newHtml += `<h3> ${element.main.humidity} </h3>`
+  return newHtml;
 }
 
 // })
