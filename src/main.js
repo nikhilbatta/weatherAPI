@@ -4,15 +4,13 @@ $(document).ready(function() {
   $('#okay').click(function() {
     let cityIDArray =  buildIDArray();
     let weatherDataArray = callWeatherAPI(cityIDArray);
-    console.log(weatherDataArray)
+    console.log(weatherDataArray);
 
-    // call weather API and suff in city id array
-    console.log(cityIDArray)
   });
 });
 
 function buildIDArray(){
-  let cityNames = []
+  let cityNames = [];
   $("input:checkbox[name=cityRadio]:checked").each(function(){
     var city = $(this).val();
     cityNames.push(city);
@@ -27,39 +25,24 @@ function buildIDArray(){
   let cityIdsMap = new Map(cityIds);
   let cityIDArray = cityNames.map(x => cityIdsMap.get(x));
   return cityIDArray;
-
-
 }
 
 function callWeatherAPI(cityIDArray){
-  let weatherData = []
+  let weatherData = [];
   cityIDArray.forEach(function(id){
     let weatherService = new WeatherService()
     let promise = weatherService.getWeatherByID(id)
     promise.then(function(response){
       const body = JSON.parse(response);
-      weatherData.push(body.main.temp);
+      console.log(body);
+      weatherData.push(body);
      }, function(error){
         console.log(error)
       })
   })
   return weatherData;
 }
-//
-//   let weatherService = new WeatherService()
-//   let promise = weatherService.getWeatherByCity(city)// code moved to _weather-service.js_
-//
-//   promise.then(function(response) {
-//     const body = JSON.parse(response);
-//     $('.showHumidity').text(`The humidity in ${city} is ${body.main.humidity}%`);
-//     $('.showTemp').text(`The temperature in temperature is ${body.main.temp} degrees.`);
-//   }, function(error) {
-//     $('.showErrors').text(`There was an error processing your request: ${error.message}`);
-//   });
-// });
-//
-//
-//
+
 // })
 // const cityIDArray = ["4720131","5809844","5812944","5814043"]
 // let newWeather = new WeatherService()
