@@ -1,0 +1,15 @@
+    let cityIds = [
+      ["Seattle",5809844]
+      ["New York", 5128638]
+      ["Portland", 4975802]
+      ["Los Angeles",5368361]
+      ["Lacey",5800112]
+    ]
+    let cityIdsMap = new Map(cityIds);
+    let cityNames = ["Portland", "Seattle"];
+    let cityIDArray = [];
+    cityNames.forEach(function(city) {
+      cityIDArray.push(cityIdsMap.get(city));
+    });
+    console.log(cityIdsMap);
+    console.log(cityIDArray);

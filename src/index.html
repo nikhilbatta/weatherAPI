@@ -4,22 +4,30 @@
     <script type="text/javascript" src="weather-interface.js"></script>
     <title>Weather</title>
   </head>
-  <body>
-    <div class="container">
-      <h1>Get Weather Conditions From Anywhere!</h1>
-      <label for="location">Enter a location:</label>
-      <input id="location" type="text">
-      <button class="btn-success" id="weatherLocation">Get Current Temperature and Humidity</button>
-<br>
-  <input type="radio" name="vehicle1" id="seattle" value="Seattle"> Seattle <br>
-  <input type="radio" name="vehicle2" value="Portland"> Portland <br>
-  <input type="radio" name="vehicle3" value="London"> London<br><br>
-<button id="okay" type="click" name="button"> Button Way</button>
-
-<div class="errors"></div>
-<div class="showHumidity"></div>
-<div class="showTemp"></div>
+  <body class="container">
+    <div id='header' class="jumbotron">
+      <p>Get weather for cities</p>
     </div>
+
+    <div id='cityRadio'>
+      <input type="checkbox" name="cityRadio" value="Seattle"> Seattle <br>
+      <input type="checkbox" name="cityRadio" value="Portland"> Portland <br>
+      <input type="checkbox" name="cityRadio" value="London"> London<br><br>
+      <button id="okay" type="click" name="button"> Button Way</button>
+    </div>
+
+
+
+
+
+
+    <div id='output' class="">
+      <div class="errors"></div>
+      <div class="showHumidity"></div>
+      <div class="showTemp"></div>
+    </div>
+
+
   </body>
 </html>
 

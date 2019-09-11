@@ -43,7 +43,6 @@ export class Giphy{
             } else {
               console.log(this.status)
               reject(Error(request.statusText))
-
             }
           }
           request.open("GET", url, true);
