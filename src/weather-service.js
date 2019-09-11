@@ -2,7 +2,7 @@ export class WeatherService {
   getWeatherByCity(city) {
     return new Promise(function(resolve, reject) {
       let request = new XMLHttpRequest();
-      const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=`;
+      const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${process.env.API_KEY}`;
       request.onload = function() {
         if (this.status === 200) {
           resolve(request.response);
@@ -17,7 +17,7 @@ export class WeatherService {
   getWeatherByID(city1){
     return new Promise(function(resolve,reject){
       let request = new XMLHttpRequest();
-      const url = `http://api.openweathermap.org/data/2.5/weather?id=${city1}&APPID=`
+      const url = `http://api.openweathermap.org/data/2.5/weather?id=${city1}&APPID=${process.env.API_KEY}`
       request.onload = function() {
         if (this.status === 200) {
           resolve(request.response);
@@ -35,7 +35,7 @@ export class Giphy{
       getGiphyByCity(giphy1){
         return new Promise(function(resolve,reject){
           let request = new XMLHttpRequest();
-          const url = `http://api.giphy.com/v1/gifs/search?q=${giphy1}i&api_key=`
+          const url = `http://api.giphy.com/v1/gifs/search?q=${giphy1}i&api_key=${process.env.GIPHY_API_KEY}`
           request.onload = function(){
             if(this.status === 200){
               resolve(request.response)
