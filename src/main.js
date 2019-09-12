@@ -3,25 +3,26 @@ import { Giphy} from './weather-service.js';
 $(document).ready(function() {
   $('#okay').click(function() {
     let cityIDArray =  buildIDArray();
-    let weatherPromises =[];
-    let weatherDataArray = [];
-    let giphyPromises = [];
-    let giphys = []
+    let i = 0;
     cityIDArray.forEach(id => {
-      weatherPromises.push(callWeatherAPI(weatherDataArray, id));
-    });
-    Promise.all(weatherPromises).then( () => {
-      weatherDataArray.forEach(function(element, i) {
-        $(`#output${i+1}`).html(displayCityInfo(element, i)).show();
-        giphyPromises.push(callGiphyAPI(element.name , i, giphys));
+      callWeatherAPI(id)
+      .then(function(response){
+        const weatherData = JSON.parse(response);
+        i++;
+        console.log(i)
+        $(`div#output${i}`).html(displayCityInfo(weatherData));
+        return callGiphyAPI(weatherData.name);
       })
-      Promise.all(giphyPromises).then(function()  {
-        giphys.forEach(function(element, i) {
-          displayGiphy(element, i);
-        })
-      });
-    });
+      .then(function(response){
+        const giphyBody = JSON.parse(response);
+        console.log(giphyBody)
+        let giphyImage = giphyBody["data"][0]["images"]["downsized"]["url"]
+        $(`div#output${i}`).append(`<img src='${giphyImage}'>`);
+      })
+    })
+  });
 });
+
 function buildIDArray(){
   let cityNames = [];
   $("input:checkbox[name=cityRadio]:checked").each(function(){
@@ -39,18 +40,14 @@ function buildIDArray(){
   let cityIDArray = cityNames.map(x => cityIdsMap.get(x));
   return cityIDArray;
 }
-function callWeatherAPI(weatherDataArray, id){
-    let weatherService = new WeatherService();
-    let promise = weatherService.getWeatherByID(id);
-    promise.then(function(response){
-      const body = JSON.parse(response);
-      weatherDataArray.push(body);
-     }, function(error){
-        console.log(error)
-      })
+function callWeatherAPI(id){
+  let weatherService = new WeatherService();
+  let promise = weatherService.getWeatherByID(id);
   return promise;
 }
-function displayCityInfo(element, i){
+
+
+function displayCityInfo(element){
   let newHtml = "";
   let temp = Math.round((element.main.temp - 273.15) *10) /10;
   newHtml += `<h1> ${element.name} </h1>`;
@@ -59,18 +56,8 @@ function displayCityInfo(element, i){
   newHtml += `<h3> ${element.main.humidity} </h3>`
   return newHtml;
 }
-function callGiphyAPI(name, i, giphys){
+function callGiphyAPI(name){
   let giphy = new Giphy();
   let promise = giphy.getGiphyByCity(name);
-  promise.then(function(response){
-    const giphyBody = JSON.parse(response);
-    giphys.push(giphyBody);
-   }, function(error){
-      console.log(error)
-    })
-    return promise;
+  return promise;
 }
-function displayGiphy(element,i){
-  return $("#output").append(`<img src=${element.data[0].images.original.url}</img>`)
-}
-});
