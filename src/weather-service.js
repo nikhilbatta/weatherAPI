@@ -15,6 +15,8 @@ export class WeatherService {
     })
   }
 }
+
+
 export class Giphy {
   getGiphyByCity(giphy1){
     return new Promise(function(resolve,reject){
